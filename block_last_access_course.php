@@ -14,6 +14,12 @@ define('BLOCK_LAST_ACCESS_COURSE_BTN_BACKGROUND_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_THUMB_COLOR', "#c3c3c3");
 define('BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER', 3);
 
+//checking protocol to build a link later for courses
+$protocol = !empty($_SERVER['HTTPS'])?'https://':'http://';
+$site_url= $protocol.$_SERVER['SERVER_NAME'];
+
+define('BLOCK_LAST_ACCESS_COURSE_MOODLE_INSTALLATION_DIR', $site_url);
+
 
 //if not logged in, dont display block. had to do this because it would give me an error if not logged in
 if (!isloggedin()) {
@@ -44,6 +50,9 @@ if (!isloggedin()) {
             }
             if (empty($this->config->thumb_color)) {
                 $this->config->thumb_color = BLOCK_LAST_ACCESS_COURSE_THUMB_COLOR;
+            }
+            if (empty($this->config->moodle_dir)) {
+                $this->config->moodle_dir = BLOCK_LAST_ACCESS_COURSE_MOODLE_INSTALLATION_DIR;
             }
 
             global $USER, $DB;
@@ -116,7 +125,7 @@ if (!isloggedin()) {
             }
             
             #btnShowMore:hover{
-                filter: brightness(.75);
+                filter: brightness(1.25);
                 transform: translateY(3px);
             }
             #btnShowMore:active{
@@ -143,12 +152,9 @@ if (!isloggedin()) {
             $html2 = "";
             $i = 1;
 
-            //checking protocol to build a link later for courses
-            $protocol = !empty($_SERVER['HTTPS'])?'https://':'http://';
             
-            $site_url= $protocol.$_SERVER['SERVER_NAME'];
 
-            $course_url = $site_url . '/course/view.php?id=';
+            $course_url = $this->config->moodle_dir . '/course/view.php?id=';
 
             //getting each course's name and putting them in li tags
             foreach ($lastCourseAccess as $courseID => $value) {
@@ -203,6 +209,7 @@ if (!isloggedin()) {
             $this->content = new stdClass;
             $this->content->text = $final_html;
             // $this->content->footer = "<h6 style='text-align:right;'>block made by CK.</h6>";
+            $this->content->footer = "<h6 style='text-align:right; margin-top: 1rem;'><a href='".$this->config->moodle_dir . "/course"."'>View All Courses</a></h6>";
 
             // scripts for DOM manipulation
             echo "
