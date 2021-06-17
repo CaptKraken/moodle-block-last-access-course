@@ -9,9 +9,9 @@
  */
 
 //settings
-define('BLOCK_LAST_ACCESS_COURSE_BTN_TEXT_COLOR', "#000");
-define('BLOCK_LAST_ACCESS_COURSE_BTN_BACKGROUND_COLOR', "#fff");
-define('BLOCK_LAST_ACCESS_COURSE_THUMB_COLOR', "#000");
+define('BLOCK_LAST_ACCESS_COURSE_BTN_TEXT_COLOR', "#030303");
+define('BLOCK_LAST_ACCESS_COURSE_BTN_BACKGROUND_COLOR', "#f1f1f1");
+define('BLOCK_LAST_ACCESS_COURSE_THUMB_COLOR', "#c3c3c3");
 define('BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER', 3);
 
 
@@ -48,11 +48,12 @@ if (!isloggedin()) {
 
             global $USER, $DB;
 
-            // ** FOR LOGGING USER INFO **//
+            // ** FOR LOGGING **//
             // echo "</br></br></br>";
             // print_object($CFG);
             // print_object($USER);
-
+            // $course_four = $DB->get_record('course', array('id' => 4));
+            // print_r($course_four);
             // print_object(get_course_image());
 
             $firstname = $USER->firstname;
@@ -97,7 +98,7 @@ if (!isloggedin()) {
                 margin: 0;
                 font-weight: 700;
                 color: white;
-                over: hidden;
+                overflow: hidden;
                 text-align: center;
             }
             #btnShowMore{
@@ -142,13 +143,20 @@ if (!isloggedin()) {
             $html2 = "";
             $i = 1;
 
+            //checking protocol to build a link later for courses
+            $protocol = !empty($_SERVER['HTTPS'])?'https://':'http://';
+            
+            $site_url= $protocol.$_SERVER['SERVER_NAME'];
+
+            $course_url = $site_url . '/course/view.php?id=';
+
             //getting each course's name and putting them in li tags
-            foreach ($lastCourseAccess as $key => $value) {
-                $course = $DB->get_record('course', array('id' => $key));
+            foreach ($lastCourseAccess as $courseID => $value) {
+                $course = $DB->get_record('course', array('id' => $courseID));
                 $course_name = $course->fullname;
 
                 //getting course image https://stackoverflow.com/questions/61818875/how-to-get-course-image-from-moodle-api
-                $course = get_course($key);
+                $course = get_course($courseID);
                 $course_img_url = \core_course\external\course_summary_exporter::get_course_image($course);
 
                 //getting course acronym
@@ -168,14 +176,14 @@ if (!isloggedin()) {
 
                 $extra = ($i > $this->config->course_number) ? 'extra' : '';
                 // show normal courses according to the number set in setting
-                $html2 .= "<a href='./course/view.php?id={$key}' class='course__card {$extra}'> {$course_thumb} <p class='course__name'>{$course_name}</p>
+                $html2 .= "<a href='".$course_url.$courseID."' class='course__card {$extra}'> {$course_thumb} <p class='course__name'>{$course_name}</p>
                  </a>";
                 // if ($i <= $this->config->course_number) {
 
                 // }
                 // // other will have the class "extra". this is mainly for DOM manipulation
                 // if ($i > $this->config->course_number) {
-                //     $html2 .= "<a href='./course/view.php?id={$key}' class='extra course__card'> 
+                //     $html2 .= "<a href='./course/view.php?id={$courseID}' class='extra course__card'> 
                 //     <img src='{$course_img_url}' class='course__img'>
                 //     <p class='course__name'>{$course_name}</p>
                 //     </a>";
