@@ -158,11 +158,15 @@ if (!isloggedin()) {
 
             //getting each course's name and putting them in li tags
             foreach ($lastCourseAccess as $courseID => $value) {
-                $course = $DB->get_record('course', array('id' => $courseID));
+
+                // old way of getting a course's info
+                // $course = $DB->get_record('course', array('id' => $courseID)); 
+
+                //getting a course's info
+                $course = get_course($courseID);
                 $course_name = $course->fullname;
 
                 //getting course image https://stackoverflow.com/questions/61818875/how-to-get-course-image-from-moodle-api
-                $course = get_course($courseID);
                 $course_img_url = \core_course\external\course_summary_exporter::get_course_image($course);
 
                 //getting course acronym
