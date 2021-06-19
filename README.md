@@ -2,13 +2,18 @@
 
 # MOODLE Plugin Block: Last Access Course
 
-## Introduction
+- [Introduction](#introduction)
+- [How to install](#how-to-install)
+- [Features](#features)
+- [Some More Screenshots](#some-more-screenshots)
+
+# Introduction
 This is a plugin block for Moodle. This block shows all user's courses sorted by the most recent course viewed.
 
 ### **\**Install this at your own risk, I am not responsible for any damage to your site!**\**
  
-
 ![Last Access Course Screenshot](https://i.ibb.co/syjB5QH/Screen-Shot-2021-06-19-at-10-47-56-AM.png)
+
 
 ## How to install?
 
@@ -16,7 +21,7 @@ This is a plugin block for Moodle. This block shows all user's courses sorted by
 
 See http://docs.moodle.org/en/Installing_plugins for details on installing Moodle plugins
 
-## What can you do with it?
+## Features
 
  - Shows user's all courses
 	 - The courses are sorted by last access date 
