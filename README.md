@@ -3,10 +3,10 @@
 # MOODLE Plugin Block: Last Access Course
 
 Sections:
-	- [Introduction](#introduction)
-	- [Features](#features)
-	- [How to install](#how-to-install)
-	- [Some More Screenshots](#some-more-screenshots)
+	[Introduction](#introduction)
+	[Features](#features)
+	[How to install](#how-to-install)
+	[Some More Screenshots](#some-more-screenshots)
 
 ### **\**Install this at your own risk, I am not responsible for any damage to your site!**\**
 
