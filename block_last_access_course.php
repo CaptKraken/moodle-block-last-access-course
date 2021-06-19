@@ -11,14 +11,12 @@
 //settings
 define('BLOCK_LAST_ACCESS_COURSE_BTN_TEXT_COLOR', "#030303");
 define('BLOCK_LAST_ACCESS_COURSE_BTN_BACKGROUND_COLOR', "#f1f1f1");
-define('BLOCK_LAST_ACCESS_COURSE_THUMB_COLOR', "#c3c3c3");
+define('BLOCK_LAST_ACCESS_COURSE_THUMB_BACKGROUND_COLOR', "#c3c3c3");
+define('BLOCK_LAST_ACCESS_COURSE_THUMB_TEXT_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER', 3);
 
 //checking protocol to build a link later for courses
-$protocol = !empty($_SERVER['HTTPS'])?'https://':'http://';
-$site_url= $protocol.$_SERVER['SERVER_NAME'];
-
-define('BLOCK_LAST_ACCESS_COURSE_MOODLE_INSTALLATION_DIR', $site_url);
+// define('BLOCK_SRC_DIR', $CFG->wwwroot . "/blocks/last_access_course/src/");
 
 
 //if not logged in, dont display block. had to do this because it would give me an error if not logged in
@@ -48,16 +46,17 @@ if (!isloggedin()) {
             if (empty($this->config->course_number)) {
                 $this->config->course_number = BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER;
             }
-            if (empty($this->config->thumb_color)) {
-                $this->config->thumb_color = BLOCK_LAST_ACCESS_COURSE_THUMB_COLOR;
+            if (empty($this->config->thumb_background_color)) {
+                $this->config->thumb_background_color = BLOCK_LAST_ACCESS_COURSE_THUMB_BACKGROUND_COLOR;
             }
-            if (empty($this->config->moodle_dir)) {
-                $this->config->moodle_dir = BLOCK_LAST_ACCESS_COURSE_MOODLE_INSTALLATION_DIR;
+            if (empty($this->config->thumb_text_color)) {
+                $this->config->thumb_text_color = BLOCK_LAST_ACCESS_COURSE_THUMB_TEXT_COLOR;
             }
 
-            global $USER, $DB;
+            global $USER, $CFG;
 
             // ** FOR LOGGING **//
+            // global $USER, $DB, $PAGE, $CFG;
             // echo "</br></br></br>";
             // print_object($CFG);
             // print_object($USER);
@@ -66,76 +65,10 @@ if (!isloggedin()) {
             // print_object(get_course_image());
 
             $firstname = $USER->firstname;
+
             // hide the block for guest users
             if ($firstname === "Guest user") return;
 
-            // html
-            $html = "
-            <style>
-            .course__card{
-                display: flex;
-                align-items: center;
-                min-height: 64px;
-                text-decoration: none;
-                transition: all .25s;
-                margin-bottom: .25rem;
-            }
-            .course__name{
-                color: black;
-                margin-bottom: 0;
-            }
-            .course__card:hover{
-                background: rgba(0,0,0, .2);
-                text-decoration: none;
-            }
-            .course__card:hover .course__name{
-                text-decoration: underline;
-                text-decoration-color: black;
-            }
-            .course__img{
-                width: 4rem; height: 4rem; object-fit: contain; margin-right: 1rem;
-            }
-            .course__thumb{
-                width: 4rem; height: 4rem; background: {$this->config->thumb_color}; margin-right: 1rem; display: flex; align-items: center; justify-content: center;
-            }
-
-            .course__card:hover .course__thumb--title{
-                
-            }
-            .course__thumb--title{
-                font-size: 1rem;
-                margin: 0;
-                font-weight: 700;
-                color: white;
-                overflow: hidden;
-                text-align: center;
-            }
-            #btnShowMore{
-                color: {$this->config->color};
-                background: {$this->config->background};
-                border: none;
-                transform: translateY(0);
-                min-width: 100%;
-                padding: .5rem 0;
-                filter: brightness(1);
-                transition: all .25s;
-            }
-            #btnShowMore.less:hover {
-                transform: translateY(-3px);
-            }
-            
-            #btnShowMore:hover{
-                filter: brightness(1.25);
-                transform: translateY(3px);
-            }
-            #btnShowMore:active{
-                filter: brightness(1);
-                transform: translateY(0);
-            }
-
-            </style>
-            <div>
-            ";
             //get all the last access courses
             $lastCourseAccess = $USER->lastcourseaccess;
 
@@ -145,22 +78,94 @@ if (!isloggedin()) {
                 $this->content->text = $message;
                 return;
             }
-
             //sort them by value (timestamp, id=>timestamp)
             arsort($lastCourseAccess);
+?>
+            <style>
+                .course__card {
+                    display: flex;
+                    align-items: center;
+                    min-height: 64px;
+                    text-decoration: none;
+                    transition: all .25s;
+                    margin-bottom: .25rem;
+                }
 
-            $html2 = "";
+                .course__name {
+                    color: black;
+                    margin-bottom: 0;
+                }
+
+                .course__card:hover {
+                    background: rgba(0, 0, 0, .2);
+                    text-decoration: none;
+                }
+
+                .course__card:hover .course__name {
+                    text-decoration: underline;
+                    text-decoration-color: black;
+                }
+
+                .course__img {
+                    width: 4rem;
+                    height: 4rem;
+                    object-fit: contain;
+                    margin-right: 1rem;
+                }
+
+                .course__thumb {
+                    width: 4rem;
+                    height: 4rem;
+                    background: <?= $this->config->thumb_background_color ?>;
+                    margin-right: 1rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .course__thumb--title {
+                    font-size: 1rem;
+                    margin: 0;
+                    font-weight: 700;
+                    color: <?= $this->config->thumb_text_color ?>;
+                    overflow: hidden;
+                    text-align: center;
+                }
+
+                #btnShowMore {
+                    color: <?= $this->config->color ?>;
+                    background: <?= $this->config->background ?>;
+                    border: none;
+                    transform: translateY(0);
+                    min-width: 100%;
+                    padding: .5rem 0;
+                    filter: brightness(1);
+                    transition: all .25s;
+                }
+
+                #btnShowMore.less:hover {
+                    transform: translateY(-3px);
+                }
+
+                #btnShowMore:hover {
+                    filter: brightness(1.25);
+                    transform: translateY(3px);
+                }
+
+                #btnShowMore:active {
+                    filter: brightness(1);
+                    transform: translateY(0);
+                }
+            </style>
+
+            <?php
+
+            $html = "<div>";
             $i = 1;
-
-            
-
-            $course_url = $this->config->moodle_dir . '/course/view.php?id=';
+            $course_url = $CFG->wwwroot . '/course/view.php?id=';
 
             //getting each course's name and putting them in li tags
             foreach ($lastCourseAccess as $courseID => $value) {
-
-                // old way of getting a course's info
-                // $course = $DB->get_record('course', array('id' => $courseID)); 
 
                 //getting a course's info
                 $course = get_course($courseID);
@@ -186,18 +191,11 @@ if (!isloggedin()) {
 
                 $extra = ($i > $this->config->course_number) ? 'extra' : '';
                 // show normal courses according to the number set in setting
-                $html2 .= "<a href='".$course_url.$courseID."' class='course__card {$extra}'> {$course_thumb} <p class='course__name'>{$course_name}</p>
-                 </a>";
-                // if ($i <= $this->config->course_number) {
-
-                // }
-                // // other will have the class "extra". this is mainly for DOM manipulation
-                // if ($i > $this->config->course_number) {
-                //     $html2 .= "<a href='./course/view.php?id={$courseID}' class='extra course__card'> 
-                //     <img src='{$course_img_url}' class='course__img'>
-                //     <p class='course__name'>{$course_name}</p>
-                //     </a>";
-                // }
+                $html .= "
+                    <a href='{$course_url}{$courseID}' class='course__card {$extra}'> 
+                        {$course_thumb} 
+                        <p class='course__name'>{$course_name}</p>
+                    </a>";
                 $i++;
             }
 
@@ -207,55 +205,50 @@ if (!isloggedin()) {
             $btn_show_more = (count($lastCourseAccess) <= $this->config->course_number) ? "" : "<button id='btnShowMore'>Show More ↓</button>";
 
             //piecing all the things together
-            $final_html = $html . $html2 . "</div>{$btn_show_more}";
+            $final_html = $html . "</div>{$btn_show_more}";
 
             //display the block
             $this->content = new stdClass;
             $this->content->text = $final_html;
             // $this->content->footer = "<h6 style='text-align:right;'>block made by CK.</h6>";
-            $this->content->footer = "<h6 style='text-align:right; margin-top: 1rem;'><a href='".$this->config->moodle_dir . "/course"."'>View All Courses</a></h6>";
-
-            // scripts for DOM manipulation
-            echo "
+            $this->content->footer = "
+            <h6 style='text-align:right; margin-top: 1rem;'><a href='{$this->config->moodle_dir}/course'>View All Courses</a></h6>";
+            ?>
             <script>
-                
-            // i dont know when the file is gonna render in the dom, so i wait until the DOM content is loaded to push the script in
-                window.addEventListener('DOMContentLoaded', (event) => {
-                    const extraCourses = document.querySelectorAll('.extra');
-                    const btnShow = document.querySelector('#btnShowMore');
-                    
-                    btnShow.addEventListener('click', ()=>{
-                        if (extraCourses[0].style.display==='none'){
+                window.addEventListener('load', () => {
+                    const extraCourses = document.querySelectorAll(".extra");
+                    const btnShow = document.querySelector("#btnShowMore");
+
+                    btnShow.addEventListener("click", () => {
+                        if (extraCourses[0].style.display === "none") {
                             courseShow();
-                        }else{
+                        } else {
                             courseHidden();
-                            
                         }
                     });
 
-                    function courseHidden(){
-                        extraCourses.forEach(extra=>{
-                            extra.style.display='none';
-                            extra.style.visibility='hidden';
-                            btnShow.textContent= 'Show More ↓';
-                            btnShow.classList.remove('less');
+                    function courseHidden() {
+                        extraCourses.forEach((extra) => {
+                            extra.style.display = "none";
+                            extra.style.visibility = "hidden";
+                            btnShow.textContent = "Show More ↓";
+                            btnShow.classList.remove("less");
                         });
                     }
-                    function courseShow(){
-                        extraCourses.forEach(extra=>{
-                            extra.style.display='flex';
-                            extra.style.visibility='visible';
-                            btnShow.textContent= 'Show Less ↑';
-                            btnShow.classList.add('less');
+
+                    function courseShow() {
+                        extraCourses.forEach((extra) => {
+                            extra.style.display = "flex";
+                            extra.style.visibility = "visible";
+                            btnShow.textContent = "Show Less ↑";
+                            btnShow.classList.add("less");
                         });
                     }
-                    
+
                     courseHidden();
-
-                });
-                
-            </script>";
-
+                })
+            </script>
+<?php
             // finally displaying the block
             return $this->content;
         }
