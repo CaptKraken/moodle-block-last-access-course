@@ -9,15 +9,7 @@ This is a plugin block for Moodle. This block shows all user's courses sorted by
 
 ## How to install?
 
- 1. Clone this repo
- 
-    ```git clone https://github.com/CaptKraken/moodle-block-last-access-course.git```
-				    
- 2.  Change the name of the folder to "**last_access_course**"
- 3. Copy the folder to **path-to-moodle/blocks/**
-
-OR
-download the zip
+download the zip https://github.com/CaptKraken/moodle-block-last-access-course/raw/master/last_access_course.zip
 
 See http://docs.moodle.org/en/Installing_plugins for details on installing Moodle plugins
 
