@@ -7,10 +7,10 @@
 - [How to install](#how-to-install)
 - [Some More Screenshots](#some-more-screenshots)
 
+### **\**Install this at your own risk, I am not responsible for any damage to your site!**\**
+
 # Introduction
 This is a plugin block for Moodle. This block shows all user's courses sorted by the most recent course viewed.
-
-### **\**Install this at your own risk, I am not responsible for any damage to your site!**\**
  
 ![Last Access Course Screenshot](https://i.ibb.co/syjB5QH/Screen-Shot-2021-06-19-at-10-47-56-AM.png)
 
