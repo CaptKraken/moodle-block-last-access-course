@@ -16,6 +16,9 @@ This is a plugin block for Moodle. This block shows all user's courses sorted by
  2.  Change the name of the folder to "**last_access_course**"
  3. Copy the folder to **path-to-moodle/blocks/**
 
+OR
+download the zip
+
 See http://docs.moodle.org/en/Installing_plugins for details on installing Moodle plugins
 
 ## What can you do with it?
