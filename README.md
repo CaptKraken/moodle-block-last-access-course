@@ -26,9 +26,9 @@ See http://docs.moodle.org/en/Installing_plugins for details on installing Moodl
 ## Some more screenshots
 
 
-Main Display | All Courses Shown 
------------- | -------------
-<img src="https://i.ibb.co/LP4Qt4H/Screen-Shot-2021-06-19-at-11-20-27-AM.png"> | <img src="https://i.ibb.co/Cww7yf0/Screen-Shot-2021-06-19-at-11-21-56-AM.png"> | 
+Main Display | All Courses Shown | No Courses
+------------ | ------------- | ----------
+<img src="https://i.ibb.co/LP4Qt4H/Screen-Shot-2021-06-19-at-11-20-27-AM.png"> | <img src="https://i.ibb.co/Cww7yf0/Screen-Shot-2021-06-19-at-11-21-56-AM.png"> | <img src="https://i.ibb.co/nCNMSmC/Screen-Shot-2021-06-19-at-1-32-29-PM.png">
 
 
 Setting Page
