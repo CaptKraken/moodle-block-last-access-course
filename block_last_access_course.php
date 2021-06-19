@@ -15,10 +15,6 @@ define('BLOCK_LAST_ACCESS_COURSE_THUMB_BACKGROUND_COLOR', "#c3c3c3");
 define('BLOCK_LAST_ACCESS_COURSE_THUMB_TEXT_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER', 3);
 
-//checking protocol to build a link later for courses
-// define('BLOCK_SRC_DIR', $CFG->wwwroot . "/blocks/last_access_course/src/");
-
-
 //if not logged in, dont display block. had to do this because it would give me an error if not logged in
 if (!isloggedin()) {
     return;
