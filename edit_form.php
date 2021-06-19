@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * Contains the class for the Last Access Course block.
+ *
+ * @package    block_last_access_course
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * made by CaptKraken
+ */
+
 class block_last_access_course_edit_form extends block_edit_form
 {
 

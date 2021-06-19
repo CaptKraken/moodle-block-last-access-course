@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contains the class for the Timeline block.
+ * Contains the class for the Last Access Course block.
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

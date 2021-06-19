@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contains the class for the Timeline block.
+ * Contains the class for the Last Access Course block.
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -14,6 +14,7 @@ define('BLOCK_LAST_ACCESS_COURSE_BTN_BACKGROUND_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_THUMB_BACKGROUND_COLOR', "#c3c3c3");
 define('BLOCK_LAST_ACCESS_COURSE_THUMB_TEXT_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER', 3);
+
 
 //if not logged in, dont display block. had to do this because it would give me an error if not logged in
 if (!isloggedin()) {
@@ -158,7 +159,7 @@ if (!isloggedin()) {
 
             $html = "<div>";
             $i = 1;
-            $course_url = $CFG->wwwroot . '/course/view.php?id=';
+            $course_url = $CFG->wwwroot . '/course';
 
             //getting each course's name and putting them in li tags
             foreach ($lastCourseAccess as $courseID => $value) {
@@ -188,7 +189,7 @@ if (!isloggedin()) {
                 $extra = ($i > $this->config->course_number) ? 'extra' : '';
                 // show normal courses according to the number set in setting
                 $html .= "
-                    <a href='{$course_url}{$courseID}' class='course__card {$extra}'> 
+                    <a href='{$course_url}/view.php?id={$courseID}' class='course__card {$extra}'> 
                         {$course_thumb} 
                         <p class='course__name'>{$course_name}</p>
                     </a>";
@@ -208,7 +209,7 @@ if (!isloggedin()) {
             $this->content->text = $final_html;
             // $this->content->footer = "<h6 style='text-align:right;'>block made by CK.</h6>";
             $this->content->footer = "
-            <h6 style='text-align:right; margin-top: 1rem;'><a href='{$this->config->moodle_dir}/course'>View All Courses</a></h6>";
+            <h6 style='text-align:right; margin-top: 1rem;'><a href='{$course_url}'>View All Courses</a></h6>";
             ?>
             <script>
                 window.addEventListener('load', () => {
