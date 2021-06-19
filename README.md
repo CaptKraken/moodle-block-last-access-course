@@ -3,7 +3,7 @@
 # MOODLE Plugin Block: Last Access Course
 
 ## Introduction
-This is a plugin block for Moodle. This block shows all user's courses sorted by the last most recent course viewed.
+This is a plugin block for Moodle. This block shows all user's courses sorted by the most recent course viewed.
 
 ### **\**Install this at your own risk, I am not responsible for any damage to your site!**\**
  
