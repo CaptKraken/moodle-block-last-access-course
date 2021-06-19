@@ -3,8 +3,8 @@
 # MOODLE Plugin Block: Last Access Course
 
 - [Introduction](#introduction)
-- [How to install](#how-to-install)
 - [Features](#features)
+- [How to install](#how-to-install)
 - [Some More Screenshots](#some-more-screenshots)
 
 # Introduction
@@ -14,13 +14,6 @@ This is a plugin block for Moodle. This block shows all user's courses sorted by
  
 ![Last Access Course Screenshot](https://i.ibb.co/syjB5QH/Screen-Shot-2021-06-19-at-10-47-56-AM.png)
 
-
-## How to install?
-
-[Download the zip](https://github.com/CaptKraken/moodle-block-last-access-course/raw/master/last_access_course.zip)
-
-See http://docs.moodle.org/en/Installing_plugins for details on installing Moodle plugins
-
 ## Features
 
  - Shows user's all courses
@@ -29,8 +22,13 @@ See http://docs.moodle.org/en/Installing_plugins for details on installing Moodl
 - Set how many courses for the block to  show in setting
  - Customize the course cards and read more button colors
 
-## Some more screenshots
+## How to install?
 
+[Download the zip](https://github.com/CaptKraken/moodle-block-last-access-course/raw/master/last_access_course.zip)
+
+See http://docs.moodle.org/en/Installing_plugins for details on installing Moodle plugins
+
+## Some more screenshots
 
 Main Display | All Courses Shown | No Courses
 ------------ | ------------- | ----------
