@@ -22,7 +22,7 @@ $string['config_thumb_background_color'] = 'ពណ៍ផ្ទៃខាងក្
 $string['config_thumb_text_color'] = 'ពណ៍អក្សររបស់រូបមេរៀន';
 $string['config_show_time_elapsed'] = 'ពេលវេលាកន្លងផុត';
 $string['config_show_time_elapsed_label'] = 'បង្ហាញ';
-$string['config_course_number_note'] = '0 = ការកំណត់ដើម (3)<br>999 = បង្ហាញទាំអស់';
+$string['config_course_number_note'] = '0 = ការកំណត់ដើម (3)<br>999 = បង្ហាញទាំងអស់';
 $string['config_reset_btn_text'] = 'កែទៅពណ៍ដើមវិញ';
 
 $string['ui_view_all_courses'] = 'មើលមេរៀនទាំងអស់';
