@@ -5,7 +5,7 @@
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author CaptKraken
+ * made by CaptKraken
  */
 
 class block_last_access_course_edit_form extends block_edit_form
@@ -23,11 +23,12 @@ class block_last_access_course_edit_form extends block_edit_form
          */
         function color_picker_generator($id, $defaultClr)
         {
+            $str_config_reset_btn = get_string('config_reset_btn_text', 'block_last_access_course');
             //still putting this here because i dont know how to do dynamic variable naming in js
             echo "
             <script>
                 const {$id}Picker = `<div style='display: flex; align-items: center;'><input type='color' id='id_config_input_{$id}_picker'></div>`;
-                const btn{$id}Reset = `<div id='btn_{$id}_reset' class='btn-reset-clr'>Reset Color</div>`;
+                const btn{$id}Reset = `<div id='btn_{$id}_reset' class='btn-reset-clr'>{$str_config_reset_btn}</div>`;
                 
                 window.addEventListener('load', (event) => {
                     const {$id} = document.querySelector('#fitem_id_config_{$id}');
@@ -51,13 +52,14 @@ class block_last_access_course_edit_form extends block_edit_form
                 });
             </script>";
         } ?>
-
         <script>
             window.addEventListener('load', () => {
                 const configCardHeader = document.querySelector('#id_config_card_header');
                 const configButtonHeader = document.querySelector('#id_config_btn_header');
                 //show both setting (default is to show only one setting block)
                 [configCardHeader, configButtonHeader].forEach(confHead => confHead.classList.remove('collapsed'));
+                // getComputedStyle(document.documentElement).getPropertyValue('--primary');
+
             });
         </script>
 
@@ -88,7 +90,7 @@ class block_last_access_course_edit_form extends block_edit_form
         $mform->addElement('header', 'config_card_header', get_string('config_card', 'block_last_access_course'));
 
         //time elapsed
-        $mform->addElement('advcheckbox', 'config_show_time_elapsed', get_string('config_show_time_elapsed', 'block_last_access_course'), 'Show', array('group' => 1), array(0, 1));
+        $mform->addElement('advcheckbox', 'config_show_time_elapsed', get_string('config_show_time_elapsed', 'block_last_access_course'), get_string('config_show_time_elapsed_label', 'block_last_access_course'), array('group' => 1), array(0, 1));
 
         //number of courses to show
         $options = array();
@@ -105,7 +107,7 @@ class block_last_access_course_edit_form extends block_edit_form
         );
         $mform->setDefault('config_course_number', 3);
         $mform->setType('course_number', PARAM_INT);
-        $mform->addElement('static', 'course_number_note', '', '0 = reset to default (3)<br>999 = show all');
+        $mform->addElement('static', 'course_number_note', '', get_string('config_course_number_note', 'block_last_access_course'));
 
         //thumbnail bg color
         $mform->addElement('text', 'config_thumb_background_color', get_string('config_thumb_background_color', 'block_last_access_course'));

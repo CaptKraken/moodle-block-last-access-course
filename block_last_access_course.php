@@ -5,7 +5,7 @@
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author Captkraken
+ * @author CaptKraken
  */
 
 //settings
@@ -21,6 +21,7 @@ define('BLOCK_LAST_ACCESS_COURSE_SHOW_TIME_ELAPSED', 1);
 if (!isloggedin()) {
     return;
 } else {
+
     class block_last_access_course extends block_base
     {
         function init()
@@ -74,9 +75,19 @@ if (!isloggedin()) {
          * 
          * @ Glavić from: https://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
          */
-
         function time_elapsed($datetime, $full = false)
         {
+
+            $str_time_elapsed_year = get_string('ui_te_year', 'block_last_access_course');
+            $str_time_elapsed_month = get_string('ui_te_month', 'block_last_access_course');
+            $str_time_elapsed_week = get_string('ui_te_week', 'block_last_access_course');
+            $str_time_elapsed_day = get_string('ui_te_day', 'block_last_access_course');
+            $str_time_elapsed_hour = get_string('ui_te_hour', 'block_last_access_course');
+            $str_time_elapsed_minute = get_string('ui_te_minute', 'block_last_access_course');
+            $str_time_elapsed_second = get_string('ui_te_second', 'block_last_access_course');
+            $str_time_elapsed_multi = get_string('ui_te_multi', 'block_last_access_course');
+            $str_time_elapsed_ago = get_string('ui_te_ago', 'block_last_access_course');
+            $str_time_elapsed_just_now = get_string('ui_te_just_now', 'block_last_access_course');
             try {
                 $now = new DateTime;
                 $ago = new DateTime($datetime);
@@ -87,24 +98,24 @@ if (!isloggedin()) {
                 $diff->d -= $diff->w * 7;
 
                 $string = array(
-                    'y' => 'year',
-                    'm' => 'month',
-                    'w' => 'week',
-                    'd' => 'day',
-                    'h' => 'hour',
-                    'i' => 'minute',
-                    's' => 'second',
+                    'y' => $str_time_elapsed_year,
+                    'm' => $str_time_elapsed_month,
+                    'w' => $str_time_elapsed_week,
+                    'd' => $str_time_elapsed_day,
+                    'h' => $str_time_elapsed_hour,
+                    'i' => $str_time_elapsed_minute,
+                    's' => $str_time_elapsed_second,
                 );
                 foreach ($string as $k => &$v) {
                     if ($diff->$k) {
-                        $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+                        $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? $str_time_elapsed_multi : '');
                     } else {
                         unset($string[$k]);
                     }
                 }
 
                 if (!$full) $string = array_slice($string, 0, 1);
-                return $string ? implode(', ', $string) . ' ago' : 'just now';
+                return $string ? implode(', ', $string) . ' ' . $str_time_elapsed_ago : $str_time_elapsed_just_now;
             } catch (\Throwable $th) {
                 //throw new Exception($th);
                 echo 'function time_elapsed(): incorrect timestamp format.';
@@ -143,14 +154,22 @@ if (!isloggedin()) {
                 }
             }
 
+            $str_show_more = get_string('ui_show_more', 'block_last_access_course');
+            $str_show_less = get_string('ui_show_less', 'block_last_access_course');
+            $str_view_all_courses = get_string('ui_view_all_courses', 'block_last_access_course');
+            $str_msg_no_course = get_string('ui_msg_no_course', 'block_last_access_course');
+            $str_msg_please_enrol = get_string('ui_msg_please_enrol', 'block_last_access_course');
+
+
             global $USER, $CFG, $DB, $OUTPUT, $PAGE;
 
             // ** FOR LOGGING **//
             // global $USER, $DB, $PAGE, $CFG;
-            // echo "</br></br></br>";
+
+
+            $firstname = $USER->firstname;
 
             // hide the block for guest users
-            $firstname = $USER->firstname;
             if ($firstname === "Guest user") return;
 
             //get all the last access courses
@@ -158,7 +177,7 @@ if (!isloggedin()) {
 
             //if no courses, tell them to enroll
             if (empty($lastCourseAccess)) {
-                $message = "<p style='text-align: center;'>You haven't enrolled in any course.<br><span style='font-size: 4rem;'>😁</span><br>Enroll in some.</p>";
+                $message = "<p style='text-align: center;'>{$str_msg_no_course}<br><span style='font-size: 4rem;'>😁</span><br>$str_msg_please_enrol</p>";
                 $this->content->text = $message;
                 return;
             }
@@ -234,7 +253,7 @@ if (!isloggedin()) {
                 }
 
                 #btnShowMore:hover {
-                    filter: brightness(1.25);
+                    filter: brightness(.75);
                     transform: translateY(3px);
                 }
 
@@ -268,10 +287,10 @@ if (!isloggedin()) {
                 $course = get_course($courseID);
                 $course_img_url = $this->get_course_img($course);
                 $course_name = $course->fullname;
-
                 $acronym = $this->get_course_acronym($course_name);
                 $time_period = $this->time_elapsed(userdate($timestamp));
                 $show_time_elapsed = $this->config->show_time_elapsed == 1 ? "<p class='timestamp'>{$time_period}</p>" : "";
+                // echo $this->config->show_time_elapsed;
 
 
                 //getting course thumbnail. if not available, use the acronym.
@@ -293,17 +312,17 @@ if (!isloggedin()) {
 
             // won't show button if the number of courses is smaller than the number in setting
             // basically means they dont have enough courses so they won't need a button
-            $btn_show_more = (count($lastCourseAccess) <= $this->config->course_number) ? "" : "<button id='btnShowMore'>Show More ↓</button>";
+            $btn_show_more = (count($lastCourseAccess) <= $this->config->course_number) ? "" : "<button id='btnShowMore'>{$str_show_more}</button>";
 
             //piecing all the things together
-            $final_html = $html . "</div>{$btn_show_more}";
+            $html .= "</div>{$btn_show_more}";
 
             //display the block
             $this->content = new stdClass;
-            $this->content->text = $final_html;
+            $this->content->text = $html;
             // $this->content->footer = "<h6 style='text-align:right;'>block made by CK.</h6>";
             $this->content->footer = "
-            <h6 style='text-align:right; margin-top: 1rem;'><a href='{$course_url}'>View All Courses</a></h6>";
+            <h6 style='text-align:right; margin-top: 1rem;'><a href='{$course_url}'>{$str_view_all_courses}</a></h6>";
             ?>
             <script>
                 window.addEventListener('load', () => {
@@ -322,7 +341,7 @@ if (!isloggedin()) {
                         extraCourses.forEach((extra) => {
                             extra.style.display = "none";
                             extra.style.visibility = "hidden";
-                            btnShow.textContent = "Show More ↓";
+                            btnShow.textContent = "<?= $str_show_more ?>";
                             btnShow.classList.remove("less");
                         });
                     }
@@ -331,7 +350,7 @@ if (!isloggedin()) {
                         extraCourses.forEach((extra) => {
                             extra.style.display = "flex";
                             extra.style.visibility = "visible";
-                            btnShow.textContent = "Show Less ↑";
+                            btnShow.textContent = "<?= $str_show_less ?>";
                             btnShow.classList.add("less");
                         });
                     }
