@@ -5,7 +5,7 @@
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * made by CaptKraken
+ * @author CaptKraken
  */
 
 class block_last_access_course_edit_form extends block_edit_form
@@ -14,6 +14,13 @@ class block_last_access_course_edit_form extends block_edit_form
     protected function specific_definition($mform)
     {
 
+        /**
+         * generates a color picker with a reset button all with javascript. styled with the css code below this function.
+         * 
+         * @param string $id used to create unique classes and ids for the elements.
+         * @param string $defaultClr default color for the button to reset to.
+         * @return javascipt-code
+         */
         function color_picker_generator($id, $defaultClr)
         {
             //still putting this here because i dont know how to do dynamic variable naming in js
@@ -79,6 +86,9 @@ class block_last_access_course_edit_form extends block_edit_form
 
         //CARD SETTINGS
         $mform->addElement('header', 'config_card_header', get_string('config_card', 'block_last_access_course'));
+
+        //time elapsed
+        $mform->addElement('advcheckbox', 'config_show_time_elapsed', get_string('config_show_time_elapsed', 'block_last_access_course'), 'Show', array('group' => 1), array(0, 1));
 
         //number of courses to show
         $options = array();

@@ -5,7 +5,7 @@
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * made by CaptKraken
+ * @author Captkraken
  */
 
 //settings
@@ -14,21 +14,106 @@ define('BLOCK_LAST_ACCESS_COURSE_BTN_BACKGROUND_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_THUMB_BACKGROUND_COLOR', "#c3c3c3");
 define('BLOCK_LAST_ACCESS_COURSE_THUMB_TEXT_COLOR', "#f1f1f1");
 define('BLOCK_LAST_ACCESS_COURSE_COURSE_NUMBER', 3);
+define('BLOCK_LAST_ACCESS_COURSE_SHOW_TIME_ELAPSED', 1);
 
 
 //if not logged in, dont display block. had to do this because it would give me an error if not logged in
 if (!isloggedin()) {
     return;
 } else {
-
     class block_last_access_course extends block_base
     {
         function init()
         {
             $this->title = get_string('pluginname', 'block_last_access_course');
         }
+
+        /**
+         * generates an acronym with the course name
+         * 
+         * @param string  $course_name The course name to be acronymize
+         * @return string 
+         * 
+         * @ Michael Berkowski from: https://stackoverflow.com/questions/9706429/get-the-first-letter-of-each-word-in-a-string
+         */
+        function get_course_acronym($course_name)
+        {
+            $words = explode(" ", $course_name);
+            $acronym = "";
+
+            foreach ($words as $w) {
+                $acronym .= $w[0];
+            }
+            return $acronym;
+        }
+
+        /**
+         * 
+         * gets course's image
+         * 
+         * @param object $course The course object
+         * @return string|false Returns course image url or false if no course image. 
+         * 
+         * @ Florian Metzger-Noel from: https://stackoverflow.com/questions/61818875/how-to-get-course-image-from-moodle-api
+         * 
+         * You can get the course object by using Moodle's get_course method.
+         * > ```php
+         * get_course($courseID)
+         * ```
+         */
+        function get_course_img($course)
+        {
+            return \core_course\external\course_summary_exporter::get_course_image($course);
+        }
+
+        /**
+         * get time elapsed like "a week ago", "a month ago", etc.
+         * 
+         * @param string $datetime the time string
+         * @return string
+         * 
+         * @ Glavić from: https://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
+         */
+
+        function time_elapsed($datetime, $full = false)
+        {
+            try {
+                $now = new DateTime;
+                $ago = new DateTime($datetime);
+
+                $diff = $now->diff($ago);
+
+                $diff->w = floor($diff->d / 7);
+                $diff->d -= $diff->w * 7;
+
+                $string = array(
+                    'y' => 'year',
+                    'm' => 'month',
+                    'w' => 'week',
+                    'd' => 'day',
+                    'h' => 'hour',
+                    'i' => 'minute',
+                    's' => 'second',
+                );
+                foreach ($string as $k => &$v) {
+                    if ($diff->$k) {
+                        $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+                    } else {
+                        unset($string[$k]);
+                    }
+                }
+
+                if (!$full) $string = array_slice($string, 0, 1);
+                return $string ? implode(', ', $string) . ' ago' : 'just now';
+            } catch (\Throwable $th) {
+                //throw new Exception($th);
+                echo 'function time_elapsed(): incorrect timestamp format.';
+            }
+        }
+
         function get_content()
         {
+
             if ($this->content !== NULL) {
                 return $this->content;
             }
@@ -50,20 +135,22 @@ if (!isloggedin()) {
                 $this->config->thumb_text_color = BLOCK_LAST_ACCESS_COURSE_THUMB_TEXT_COLOR;
             }
 
-            global $USER, $CFG;
+            if (empty($this->config->show_time_elapsed)) {
+                if ($this->config->show_time_elapsed == 0) {
+                    $this->config->show_time_elapsed = 0;
+                } else {
+                    $this->config->show_time_elapsed = BLOCK_LAST_ACCESS_COURSE_SHOW_TIME_ELAPSED;
+                }
+            }
+
+            global $USER, $CFG, $DB, $OUTPUT, $PAGE;
 
             // ** FOR LOGGING **//
             // global $USER, $DB, $PAGE, $CFG;
             // echo "</br></br></br>";
-            // print_object($CFG);
-            // print_object($USER);
-            // $course_four = $DB->get_record('course', array('id' => 4));
-            // print_r($course_four);
-            // print_object(get_course_image());
-
-            $firstname = $USER->firstname;
 
             // hide the block for guest users
+            $firstname = $USER->firstname;
             if ($firstname === "Guest user") return;
 
             //get all the last access courses
@@ -81,7 +168,6 @@ if (!isloggedin()) {
             <style>
                 .course__card {
                     display: flex;
-                    align-items: center;
                     min-height: 64px;
                     text-decoration: none;
                     transition: all .25s;
@@ -91,6 +177,9 @@ if (!isloggedin()) {
                 .course__name {
                     color: black;
                     margin-bottom: 0;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 .course__card:hover {
@@ -153,6 +242,17 @@ if (!isloggedin()) {
                     filter: brightness(1);
                     transform: translateY(0);
                 }
+
+                .fxdc {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+
+                .timestamp {
+                    color: rgba(0, 0, 0, .3);
+                    font-size: 0.75rem;
+                }
             </style>
 
             <?php
@@ -162,36 +262,30 @@ if (!isloggedin()) {
             $course_url = $CFG->wwwroot . '/course';
 
             //getting each course's name and putting them in li tags
-            foreach ($lastCourseAccess as $courseID => $value) {
+            foreach ($lastCourseAccess as $courseID => $timestamp) {
 
                 //getting a course's info
                 $course = get_course($courseID);
+                $course_img_url = $this->get_course_img($course);
                 $course_name = $course->fullname;
 
-                //getting course image https://stackoverflow.com/questions/61818875/how-to-get-course-image-from-moodle-api
-                $course_img_url = \core_course\external\course_summary_exporter::get_course_image($course);
+                $acronym = $this->get_course_acronym($course_name);
+                $time_period = $this->time_elapsed(userdate($timestamp));
+                $show_time_elapsed = $this->config->show_time_elapsed == 1 ? "<p class='timestamp'>{$time_period}</p>" : "";
 
-                //getting course acronym
-                //from https://stackoverflow.com/questions/9706429/get-the-first-letter-of-each-word-in-a-string
-                $words = explode(" ", $course_name);
-                $acronym = "";
-
-                foreach ($words as $w) {
-                    $acronym .= $w[0];
-                }
 
                 //getting course thumbnail. if not available, use the acronym.
                 $course_thumb = (!$course_img_url) ? "<div class='course__thumb'><p class='course__thumb--title'>" . strtoupper($acronym) . "</p></div>" : "<img src='{$course_img_url}' class='course__img'>";
 
-
-                // echo "<img src='{$course_img_url}' style='width: 4rem; height: 4rem; object-fit: contain; '><br>";
-
                 $extra = ($i > $this->config->course_number) ? 'extra' : '';
                 // show normal courses according to the number set in setting
                 $html .= "
-                    <a href='{$course_url}/view.php?id={$courseID}' class='course__card {$extra}'> 
+                    <a href='{$course_url}/view.php?id={$courseID}' title ='{$course_name}' class='course__card {$extra}'> 
                         {$course_thumb} 
-                        <p class='course__name'>{$course_name}</p>
+                        <div class='fxdc'>
+                            <p class='course__name'>{$course_name}</p>
+                            {$show_time_elapsed}
+                    </div>
                     </a>";
                 $i++;
             }

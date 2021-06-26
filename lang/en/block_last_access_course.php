@@ -5,7 +5,7 @@
  *
  * @package    block_last_access_course
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * made by CaptKraken
+ * @author CaptKraken
  */
 
 $string['pluginname'] = 'Last Access Courses';
@@ -19,3 +19,4 @@ $string['config_btn_text'] = 'Button Text Color';
 $string['config_course_number'] = 'Number of courses to show';
 $string['config_thumb_background_color'] = 'Course Thumbnail Color';
 $string['config_thumb_text_color'] = 'Course Thumbnail Text Color';
+$string['config_show_time_elapsed'] = 'Time Elapsed';
